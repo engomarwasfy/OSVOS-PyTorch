@@ -52,10 +52,7 @@ if not os.path.exists(save_dir):
 # Network definition
 modelName = 'parent'
 if resume_epoch == 0:
-    if load_caffe_vgg:
-        net = vo.OSVOS(pretrained=2)
-    else:
-        net = vo.OSVOS(pretrained=1)
+    net = vo.OSVOS(pretrained=2) if load_caffe_vgg else vo.OSVOS(pretrained=1)
 else:
     net = vo.OSVOS(pretrained=0)
     print("Updating weights from: {}".format(
@@ -141,7 +138,7 @@ for epoch in range(resume_epoch, nEpochs):
 
         # Compute the losses, side outputs and fuse
         losses = [0] * len(outputs)
-        for i in range(0, len(outputs)):
+        for i in range(len(outputs)):
             losses[i] = class_balanced_cross_entropy_loss(outputs[i], gts, size_average=False)
             running_loss_tr[i] += losses[i].item()
         loss = (1 - epoch / nEpochs)*sum(losses[:-1]) + losses[-1]
@@ -152,7 +149,7 @@ for epoch in range(resume_epoch, nEpochs):
             loss_tr.append(running_loss_tr[-1])
             writer.add_scalar('data/total_loss_epoch', running_loss_tr[-1], epoch)
             print('[Epoch: %d, numImages: %5d]' % (epoch, ii + 1))
-            for l in range(0, len(running_loss_tr)):
+            for l in range(len(running_loss_tr)):
                 print('Loss %d: %f' % (l, running_loss_tr[l]))
                 running_loss_tr[l] = 0
 
@@ -188,7 +185,7 @@ for epoch in range(resume_epoch, nEpochs):
 
                 # Compute the losses, side outputs and fuse
                 losses = [0] * len(outputs)
-                for i in range(0, len(outputs)):
+                for i in range(len(outputs)):
                     losses[i] = class_balanced_cross_entropy_loss(outputs[i], gts, size_average=False)
                     running_loss_ts[i] += losses[i].item()
                 loss = (1 - epoch / nEpochs) * sum(losses[:-1]) + losses[-1]
@@ -200,7 +197,7 @@ for epoch in range(resume_epoch, nEpochs):
 
                     print('[Epoch: %d, numImages: %5d]' % (epoch, ii + 1))
                     writer.add_scalar('data/test_loss_epoch', running_loss_ts[-1], epoch)
-                    for l in range(0, len(running_loss_ts)):
+                    for l in range(len(running_loss_ts)):
                         print('***Testing *** Loss %d: %f' % (l, running_loss_ts[l]))
                         running_loss_ts[l] = 0
 

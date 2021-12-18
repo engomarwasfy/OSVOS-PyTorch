@@ -72,11 +72,7 @@ class Resize(object):
                 continue
             tmp = sample[elem]
 
-            if tmp.ndim == 2:
-                flagval = cv2.INTER_NEAREST
-            else:
-                flagval = cv2.INTER_CUBIC
-
+            flagval = cv2.INTER_NEAREST if tmp.ndim == 2 else cv2.INTER_CUBIC
             tmp = cv2.resize(tmp, None, fx=sc, fy=sc, interpolation=flagval)
 
             sample[elem] = tmp

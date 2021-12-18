@@ -40,8 +40,7 @@ def im_normalize(im):
     """
     Normalize image
     """
-    imn = (im - im.min()) / max((im.max() - im.min()), 1e-8)
-    return imn
+    return (im - im.min()) / max((im.max() - im.min()), 1e-8)
 
 
 def construct_name(p, prefix):
@@ -53,7 +52,7 @@ def construct_name(p, prefix):
     """
     name = prefix
     for key in p.keys():
-        if (type(p[key]) != tuple) and (type(p[key]) != list):
+        if type(p[key]) not in [tuple, list]:
             name = name + '_' + str(key) + '-' + str(p[key])
         else:
             name = name + '_' + str(key) + '-' + str(p[key][0])

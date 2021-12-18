@@ -30,25 +30,26 @@ def make_dot(var, params):
         return '(' + (', ').join(['%d' % v for v in size]) + ')'
 
     def add_nodes(var):
-        if var not in seen:
-            if torch.is_tensor(var):
-                dot.node(str(id(var)), size_to_str(var.size()), fillcolor='orange')
-            elif hasattr(var, 'variable'):
-                u = var.variable
-                node_name = '%s\n %s' % (param_map.get(id(u)), size_to_str(u.size()))
-                dot.node(str(id(var)), node_name, fillcolor='lightblue')
-            else:
-                dot.node(str(id(var)), str(type(var).__name__))
-            seen.add(var)
-            if hasattr(var, 'next_functions'):
-                for u in var.next_functions:
-                    if u[0] is not None:
-                        dot.edge(str(id(u[0])), str(id(var)))
-                        add_nodes(u[0])
-            if hasattr(var, 'saved_tensors'):
-                for t in var.saved_tensors:
-                    dot.edge(str(id(t)), str(id(var)))
-                    add_nodes(t)
+        if var in seen:
+            return
+        if torch.is_tensor(var):
+            dot.node(str(id(var)), size_to_str(var.size()), fillcolor='orange')
+        elif hasattr(var, 'variable'):
+            u = var.variable
+            node_name = '%s\n %s' % (param_map.get(id(u)), size_to_str(u.size()))
+            dot.node(str(id(var)), node_name, fillcolor='lightblue')
+        else:
+            dot.node(str(id(var)), str(type(var).__name__))
+        seen.add(var)
+        if hasattr(var, 'next_functions'):
+            for u in var.next_functions:
+                if u[0] is not None:
+                    dot.edge(str(id(u[0])), str(id(var)))
+                    add_nodes(u[0])
+        if hasattr(var, 'saved_tensors'):
+            for t in var.saved_tensors:
+                dot.edge(str(id(t)), str(id(var)))
+                add_nodes(t)
 
     if type(var) == list:
         for ii in range(0, len(var)):

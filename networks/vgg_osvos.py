@@ -31,7 +31,7 @@ class OSVOS(nn.Module):
         upscale_ = modules.ModuleList()
 
         # Construct the network
-        for i in range(0, len(lay_list)):
+        for i in range(len(lay_list)):
             # Make the layers of the stages
             stages.append(make_layers_osvos(lay_list[i], in_channels[i]))
 
@@ -126,11 +126,11 @@ class OSVOS(nn.Module):
 
 
 def find_conv_layers(_vgg):
-    inds = []
-    for i in range(len(_vgg.features)):
-        if isinstance(_vgg.features[i], nn.Conv2d):
-            inds.append(i)
-    return inds
+    return [
+        i
+        for i in range(len(_vgg.features))
+        if isinstance(_vgg.features[i], nn.Conv2d)
+    ]
 
 
 def make_layers_osvos(cfg, in_channels):

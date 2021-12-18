@@ -28,11 +28,7 @@ class DAVIS2016(Dataset):
         self.meanval = meanval
         self.seq_name = seq_name
 
-        if self.train:
-            fname = 'train_seqs'
-        else:
-            fname = 'val_seqs'
-
+        fname = 'train_seqs' if self.train else 'val_seqs'
         if self.seq_name is None:
 
             # Initialize the original DAVIS splits for training the parent network

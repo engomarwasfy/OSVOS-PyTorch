@@ -109,7 +109,7 @@ aveGrad = 0
 print("Start of Online Training, sequence: " + seq_name)
 start_time = timeit.default_timer()
 # Main Training and Testing Loop
-for epoch in range(0, nEpochs):
+for epoch in range(nEpochs):
     # One training epoch
     running_loss_tr = 0
     np.random.seed(seed + epoch)
@@ -171,8 +171,7 @@ if not os.path.exists(save_dir_res):
 print('Testing Network')
 with torch.no_grad():  # PyTorch 0.4.0 style
     # Main Testing Loop
-    for ii, sample_batched in enumerate(testloader):
-
+    for sample_batched in testloader:
         img, gt, fname = sample_batched['image'], sample_batched['gt'], sample_batched['fname']
 
         # Forward of the mini-batch
